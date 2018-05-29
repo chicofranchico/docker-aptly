@@ -12,22 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:trusty
+FROM ubuntu:xenial
 
 MAINTAINER bryan@turbojets.net
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV DIST=ubuntu
-ENV RELEASE=trusty
+ENV RELEASE=xenial
 
 # Add Aptly repository
 RUN echo "deb http://repo.aptly.info/ squeeze main" > /etc/apt/sources.list.d/aptly.list
-RUN apt-key adv --keyserver keys.gnupg.net --recv-keys 9E3E53F19C7DE460
+RUN apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
 
 # Add Nginx repository
 RUN echo "deb http://nginx.org/packages/$DIST/ $RELEASE nginx" > /etc/apt/sources.list.d/nginx.list
 RUN echo "deb-src http://nginx.org/packages/$DIST/ $RELEASE nginx" >> /etc/apt/sources.list.d/nginx.list
-RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
 
 # Update APT repository and install packages
 RUN apt-get -q update                  \
@@ -37,6 +37,7 @@ RUN apt-get -q update                  \
                        gnupg           \
                        gpgv            \
                        graphviz        \
+                       python3         \
                        supervisor      \
                        nginx           \
                        wget            \
@@ -46,7 +47,7 @@ RUN apt-get -q update                  \
 COPY assets/aptly.conf /etc/aptly.conf
 
 # Enable Aptly Bash completions
-RUN wget https://github.com/smira/aptly/raw/master/bash_completion.d/aptly \
+RUN wget https://raw.githubusercontent.com/aptly-dev/aptly/master/completion.d/aptly \
   -O /etc/bash_completion.d/aptly \
   && echo "if ! shopt -oq posix; then\n\
   if [ -f /usr/share/bash-completion/bash_completion ]; then\n\
